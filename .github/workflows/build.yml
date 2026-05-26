@@ -34,7 +34,7 @@ jobs:
           fi
 
       - name: ZMK Standalone Build Engine
-        uses: zmkfirmware/zmk-actions-toolbox@v2
+        uses: bmcgavin/zmk-config-actions@main
         with:
           mode: build
           config_path: config
