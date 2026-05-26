@@ -5,7 +5,8 @@ on: [push, pull_request, workflow_dispatch]
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Build Test
+    container:
+      image: zmkfirmware/zmk-build-arm:stable
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,20 +28,21 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
-      - name: Create build.yaml if missing
+      - name: West Init
+        run: west init -l config
+
+      - name: West Update
+        run: west update
+
+      - name: West Zephyr export
+        run: west zephyr-export
+
+      - name: Compile Firmware (p48n)
         run: |
-          if [ ! -f config/build.yaml ]; then
-            echo -e "type: build\ntargets:\n  - board: nice_nano_v2\n    shield: p48n" > config/build.yaml
-          fi
+          west build -s zmk/app -b nice_nano_v2 -- -DSHIELD=p48n -DZMK_CONFIG="${GITHUB_WORKSPACE}/config"
 
-      - name: ZMK Standalone Build Engine
-        uses: bmcgavin/zmk-config-actions@main
-        with:
-          mode: build
-          config_path: config
-
-      - name: Archive artifacts
+      - name: Upload firmware
         uses: actions/upload-artifact@v4
         with:
           name: p48n_firmware
-          path: firmware/
+          path: build/zephyr/zmk.uf2
