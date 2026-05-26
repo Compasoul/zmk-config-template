@@ -39,7 +39,7 @@ jobs:
 
       - name: Compile Firmware (p48n)
         run: |
-          west build -s zmk/app -b nice_nano_v2 -- -DSHIELD=p48n -DZMK_CONFIG="${GITHUB_WORKSPACE}/config"
+          west build -s zmk/app -b nice_nano -- -DSHIELD=p48n -DZMK_CONFIG="${GITHUB_WORKSPACE}/config"
 
       - name: Upload firmware
         uses: actions/upload-artifact@v4
