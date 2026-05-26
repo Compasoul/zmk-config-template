@@ -35,15 +35,11 @@ jobs:
         run: west update
 
       - name: West Zephyr export
-        run: west west zephyr-export || west zephyr-export
+        run: west zephyr-export
 
-      - name: Compile Firmware (Force Upper/Lower Compatibility)
+      - name: Compile Firmware (p48n)
         run: |
-          # 无论原作者定义的是大写 P48N 还是小写 p48n，我们让编译器同时去轰炸这两条命令！
-          echo "Trying lowercase shield name..."
-          west build -s zmk/app -b nice_nano -- -DSHIELD=p48n -DZMK_CONFIG="${GITHUB_WORKSPACE}/config" || \
-          (echo "Trying uppercase shield name..." && \
-          west build -s zmk/app -b nice_nano -- -DSHIELD=P48N -DZMK_CONFIG="${GITHUB_WORKSPACE}/config")
+          west build -s zmk/app -b nice_nano -- -DSHIELD=p48n -DZMK_CONFIG="${GITHUB_WORKSPACE}/config"
 
       - name: Upload firmware
         uses: actions/upload-artifact@v4
