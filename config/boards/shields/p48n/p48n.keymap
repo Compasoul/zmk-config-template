@@ -1,111 +1,102 @@
-/* 
- * Copyright (c) 2020 The ZMK Contributors
- *
- * SPDX-License-Identifier: MIT
- */
-
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
-#include <dt-bindings/zmk/rgb.h>
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/outputs.h>
-#include <dt-bindings/zmk/ext_power.h>
 #include <dt-bindings/zmk/mouse.h>
 
 / {
-      macros {
-        xtips: xtips {
-            compatible = "zmk,behavior-macro";
-            label = "XTIPS";
-            #binding-cells = <0>;
-            bindings = <&kp LS(X) &kp KP_DOT &kp LS(T) &kp I &kp P &kp S>;
-            wait-ms = <1>;
-            tap-ms = <1>;
+    behaviors {
+        // 1. 大拇指 Space / Layer-Tap 行为配置
+        lt_sp: layer_tap_space {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <200>;
+            bindings = <&mo &kp>; // 【规范修正】写在同一个尖括号内
         };
-      };
 
-	keymap0: keymap {
-		compatible = "zmk,keymap";
+        // 2. 右下角 Arrow / Ctrl 双功能键配置
+        arr_ctrl: arrow_right_ctrl {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "hold-preferred";
+            tapping-term-ms = <180>;
+            quick-tap-ms = <125>;
+            bindings = <&kp &kp>; // 【规范修正】写在同一个尖括号内
+        };
 
-		default_layer {
-            bindings = <
-            &kp ESC      &kp Q        &kp W        &kp E         &kp R        &kp T     &kp Y      &kp U   &kp I        &kp O     &kp P      &kp BSPC  
-            &kp TAB      &kp A        &kp S        &kp D         &kp F        &kp G     &kp H      &kp J   &kp K        &kp L     &kp SEMI   &kp ENTER  
-            &kp DEL      &kp Z        &kp X        &kp C         &kp V        &kp B     &kp N      &kp M   &kp COMMA    &kp DOT   &kp SLASH  &kp DEL  
-            &kp LWIN     &kp LALT     &kp LCTRL    &kp LSHFT     &mo 1        &kp SPACE &kp SPACE  &mo 2   &kp LEFT     &kp RIGHT &kp UP     &kp DOWN
-            >;
-		};
+        // 3. 右下角 。 / Shift 双功能键配置
+        dot_shft: dot_shift {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "hold-preferred";
+            tapping-term-ms = <180>;
+            quick-tap-ms = <125>;
+            bindings = <&kp &kp>; // 【规范修正】写在同一个尖括号内
+        };
+    };
 
-		fn1_layer {
-            bindings = <
-            &kp TILDE   &kp N7    &kp N8    &kp N9    &kp KP_DOT &kp KP_PLUS         &kp KP_MULTIPLY  &kp PRCNT     &kp LBRC      &kp RBRC       &kp AT     &kp UNDER     
-            &kp GRAVE   &kp N4    &kp N5    &kp N6    &kp N0     &kp KP_MINUS        &kp PIPE         &kp HASH      &kp LBKT      &kp RBKT       &kp SQT    &kp DQT       
-            &kp DLLR    &kp N1    &kp N2    &kp N3    &kp BSPC   &kp EQUAL           &kp BSLH         &kp AMPS      &kp LPAR      &kp RPAR       &kp EXCL   &kp CARET     
-            &kp LWIN    &kp LALT  &kp LCTRL &kp LSHFT &to 0      &kp KP_ENTER        &kp SPACE        &kp LG(SPACE) &mo 3         &none          &none      &xtips
-             >;
-		};
+    keymap {
+        compatible = "zmk,keymap";
 
-		fn2_layer {
+        // L0: 基础层 (Base Layer)
+        default_layer {
             bindings = <
-            &kp PSCRN         &kp INS          &bt BT_SEL 0    &out OUT_BLE   &none      &none   &kp F9      &kp F10      &kp F11     &kp F12    &kp C_VOL_DN     &kp C_VOL_UP        
-            &kp SLCK          &kp KP_NLCK      &bt BT_SEL 1    &out OUT_USB   &none      &none   &kp F5      &kp F6       &kp F7      &kp F8     &kp C_PREV       &kp C_NEXT      
-            &kp PAUSE_BREAK   &kp K_CMENU      &bt BT_SEL 2    &bt BT_CLR     &none      &none   &kp F1      &kp F2       &kp F3      &kp F4     &kp C_PP         &kp C_MUTE                
-            &kp LWIN        &kp LALT       &kp LCTRL         &kp LSHFT        &kp CAPS   &to 0   &none       &to 0        &kp HOME    &kp END    &kp PG_UP        &kp PG_DN
+    &kp ESC   &kp Q     &kp W     &kp E     &kp R          &kp T          &kp Y          &kp U          &kp I     &kp O     &kp P     &kp BSPC
+    &kp TAB   &kp A     &kp S     &kp D     &kp F          &kp G          &kp H          &kp J          &kp K     &kp L     &kp SQT   &kp ENTER
+    &kp LSHFT &kp FSLH  &kp Z     &kp X     &kp C          &kp V          &kp B          &kp N          &kp M     &kp COMMA &kp UP    &dot_shft RSHFT DOT
+    &kp LCTRL &mo 3     &kp LGUI  &kp LALT  &lt_sp 1 SPACE &lt_sp 2 SPACE &lt_sp 2 SPACE &lt_sp 1 SPACE &mo 3     &kp LEFT  &kp DOWN  &arr_ctrl RCTRL RIGHT
             >;
-		};
+        };
 
-		fn3_layer {
+        // L1: 数字层 (Number Layer)
+        number_layer {
             bindings = <
-            &none   &none   &none   &none  &none   &none   &none   &none  &none   &none       &none   &none       
-            &none   &none   &none   &none  &none   &none   &none   &none  &none   &none       &none   &none   
-            &none   &none   &none   &none  &none   &none   &none   &none  &none   &none       &none   &none   
-            &none   &none   &none   &none  &none   &none   &none   &none  &none   &bootloader &none   &none   
+    &kp GRAVE &kp N1    &kp N2    &kp N3    &kp N4         &kp N5         &kp N6         &kp N7         &kp N8    &kp N9    &kp N0    &kp DEL
+    &kp CLCK  &none     &none     &none     &none          &none          &none          &none          &kp MINUS &kp EQUAL &kp SEMI  &kp KP_ENTER
+    &none     &kp BSLH  &none     &none     &none          &none          &none          &none          &none     &kp LBKT  &kp PG_UP &kp RBKT
+    &none     &none     &none     &none     &none          &none          &none          &none          &none     &kp HOME  &kp PG_DN &kp END
             >;
-		};
-		
-		fn4_layer {
-            bindings = <
-            &none   &none   &none   &none  &none   &none   &none   &none  &none   &none   &none   &none       
-            &none   &none   &none   &none  &none   &none   &none   &none  &none   &none   &none   &none   
-            &none   &none   &none   &none  &none   &none   &none   &none  &none   &none   &none   &none   
-            &none   &none   &none   &none  &none   &none   &none   &none  &none   &none   &none   &none   
-            >;
-		};
+        };
 
-		fn5_layer {
+        // L2: 符号层 (Symbol Layer)
+        symbol_layer {
             bindings = <
-            &none   &none   &none   &none  &none   &none   &none   &none  &none   &none   &none   &none       
-            &none   &none   &none   &none  &none   &none   &none   &none  &none   &none   &none   &none   
-            &none   &none   &none   &none  &none   &none   &none   &none  &none   &none   &none   &none   
-            &none   &none   &none   &none  &none   &none   &none   &none  &none   &none   &none   &none   
+    &kp TILDE &kp EXCL  &kp AT    &kp HASH  &kp DLLR       &kp PRCNT      &kp CARET      &kp AMPS       &kp ASTRK &kp LPAR  &kp RPAR  &kp DEL
+    &kp CLCK  &none     &none     &none     &none          &none          &none          &none          &kp UNDER &kp PLUS  &kp COLON &kp KP_ENTER
+    &none     &kp PIPE  &none     &none     &none          &none          &none          &none          &none     &kp LBRC  &msc SCRL_UP &kp RBRC
+    &none     &none     &none     &none     &none          &none          &none          &none          &none     &msc SCRL_LEFT &msc SCRL_DOWN &msc SCRL_RIGHT
             >;
-		};
-		
-		fn6_layer {
+        };
+
+        // L3: 功能键层 (Function Layer)
+        function_layer {
             bindings = <
-            &none   &none   &none   &none  &none   &none   &none   &none  &none   &none   &none   &none       
-            &none   &none   &none   &none  &none   &none   &none   &none  &none   &none   &none   &none   
-            &none   &none   &none   &none  &none   &none   &none   &none  &none   &none   &none   &none   
-            &none   &none   &none   &none  &none   &none   &none   &none  &none   &none   &none   &none   
+    &kp ESC   &kp F1    &kp F2    &kp F3    &kp F4         &kp F5         &kp F6         &kp F7         &kp F8    &kp F9    &kp F10   &kp DEL
+    &kp CLCK  &kp F11   &kp F12   &none     &none          &none          &none          &none          &none     &none     &none     &kp KP_ENTER
+    &none     &none     &none     &none     &none          &none          &none          &none          &none     &none     &kp PG_UP &none
+    &none     &mo 4     &none     &tg 5     &none          &none          &none          &none          &mo 4     &kp HOME  &kp PG_DN &kp END
             >;
-		};
-		
-		fn7_layer {
+        };
+
+        // L4: 硬件与蓝牙层 (Hardware & Bluetooth Layer)
+        hardware_layer {
             bindings = <
-            &none   &none   &none   &none  &none   &none   &none   &none  &none   &none   &none   &none       
-            &none   &none   &none   &none  &none   &none   &none   &none  &none   &none   &none   &none   
-            &none   &none   &none   &none  &none   &none   &none   &none  &none   &none   &none   &none   
-            &none   &none   &none   &none  &none   &none   &none   &none  &none   &none   &none   &none   
+    &out OUT_BLE &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4  &none  &none        &none     &none     &none     &bt BT_CLR
+    &out OUT_USB &none        &none        &none        &bootloader  &none         &none  &none        &none     &sys_reset     &none     &none
+    &none        &none        &none        &none        &none        &none         &none  &none        &none     &none     &none     &none
+    &none        &none        &none        &none        &none        &none         &none  &none        &none     &none     &none     &none
             >;
-		};
-		
-		fn8_layer {
+        };
+
+        // L5: 独立数字小键盘层 (Numpad Layer)
+        numpad_layer {
             bindings = <
-            &none   &none   &none   &none  &none   &none   &none   &none  &none   &none   &none   &none       
-            &none   &none   &none   &none  &none   &none   &none   &none  &none   &none   &none   &none   
-            &none   &none   &none   &none  &none   &none   &none   &none  &none   &none   &none   &none   
-            &none   &none   &none   &none  &none   &none   &none   &none  &none   &none   &none   &none   
+    &kp ESC   &none     &kp UP    &none     &none          &none          &none          &kp KP_N7      &kp KP_N8 &kp KP_N9 &kp KP_MINUS &kp BSPC
+    &none     &kp LEFT  &kp DOWN  &kp RIGHT &none          &none          &none          &kp KP_N4      &kp KP_N5 &kp KP_N6 &kp KP_PLUS  &kp KP_ENTER
+    &none     &none     &none     &none     &none          &none          &none          &kp KP_N1      &kp KP_N2 &kp KP_N3 &kp KP_MULTIPLY &kp KP_EQUAL
+    &none     &none     &none     &to 0     &none          &none          &none          &none          &kp KP_N0 &kp KP_DOT &kp KP_SLASH &kp CARET
             >;
-		};
-	};
+        };
+    };
 };
